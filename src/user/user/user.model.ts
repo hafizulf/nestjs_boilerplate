@@ -15,5 +15,5 @@ export class CreateUserRequest {
   email: string;
   username: string;
   password: string;
-  avatar_path: string;
+  avatar_path?: Express.Multer.File | string;
 }

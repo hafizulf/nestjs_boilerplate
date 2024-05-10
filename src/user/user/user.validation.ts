@@ -6,6 +6,9 @@ export class UserValidation {
     email: z.string().email(),
     username: z.string().min(6),
     password: z.string().min(6),
-    avatar_path: z.string().optional(),
+    avatar_path: z
+      .any()
+      .optional()
+      .transform((value: unknown) => <Express.Multer.File>value),
   });
 }
