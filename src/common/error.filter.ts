@@ -5,12 +5,13 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { ZodError } from 'zod';
+import { Response } from 'express';
 
 @Catch(ZodError, HttpException)
 export class ErrorFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse();
+    const response = ctx.getResponse<Response>();
     // const request = ctx.getRequest();
 
     if (exception instanceof HttpException) {

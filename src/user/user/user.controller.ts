@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   HttpStatus,
+  ParseFilePipeBuilder,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -18,7 +19,20 @@ export class UserController {
   @Post()
   @UseInterceptors(FileInterceptor('avatar_path'))
   async create(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: 'jpeg|jpg|png',
+        })
+        .addMaxSizeValidator({
+          maxSize: 2000000,
+        })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+          fileIsRequired: false,
+        }),
+    )
+    file: Express.Multer.File,
     @Body() body: CreateUserRequest,
   ): Promise<WebResponse<UserResponse>> {
     const user = await this.userService.create(body, file);
