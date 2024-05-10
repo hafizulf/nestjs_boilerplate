@@ -14,15 +14,15 @@ datasource db {
 }
 
 model User {
-  id String @id @unique @db.VarChar(100)
+  id String? @default(uuid()) @db.VarChar(100)
   full_name String @db.VarChar(100)
   email String @unique @db.VarChar(100)
   username String @unique @db.VarChar(100)
   password String @db.VarChar(100)
   avatar_path String? @db.VarChar(255)
-  created_at String  @db.VarChar(100)
-  updated_at String  @db.VarChar(100)
-  deleted_at String?  @db.VarChar(100)
+  created_at DateTime  @db.Date() @default(now())
+  updated_at DateTime  @db.Date() @default(now())
+  deleted_at DateTime?  @db.Date()
 
   @@map("users")
 }
