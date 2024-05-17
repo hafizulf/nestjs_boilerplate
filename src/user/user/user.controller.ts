@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   HttpStatus,
@@ -26,6 +27,7 @@ export class UserController {
         })
         .addMaxSizeValidator({
           maxSize: 2000000,
+          message: 'File size is too large. Max size is 2MB',
         })
         .build({
           errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -38,7 +40,7 @@ export class UserController {
     const user = await this.userService.create(body, file);
     return {
       status: HttpStatus.CREATED,
-      message: 'User created',
+      message: 'User created successfully',
       data: user,
     };
   }

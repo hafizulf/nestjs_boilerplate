@@ -29,7 +29,7 @@ export class ErrorFilter implements ExceptionFilter {
       }
 
       response.status(400).json({
-        message: 'Validation error',
+        message: 'Validation Error',
         errors: formattedErrors,
       });
     } else {

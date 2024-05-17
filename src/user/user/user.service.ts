@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { ValidationService } from '../../common/validation.service';
 import { CreateUserRequest, UserResponse } from './user.model';
 import { UserValidation } from './user.validation';
@@ -6,6 +6,7 @@ import { UserRepository } from './user.repository';
 import { UserDomain } from './user.domain';
 import * as bcrypt from 'bcrypt';
 import { FileService } from '../../common/file.service';
+import { validateFileType } from '../../common/file-type.validator';
 
 @Injectable()
 export class UserService {
@@ -23,6 +24,14 @@ export class UserService {
       UserValidation.CREATE,
       request,
     );
+
+    // validate mime type
+    if(createRequest.avatar_path) {
+      const isValidFileType = await validateFileType(avatar_path);
+      if (!isValidFileType) {
+        throw new HttpException('Invalid file type. Only image files are allowed.', 422);
+      }
+    }
 
     await this.userRepository.checkUserExist({
       email: createRequest.email,
