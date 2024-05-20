@@ -34,7 +34,7 @@ describe('User (e2e)', () => {
     afterAll(async () => {
       await testService.truncateUsers();
     })
-    it('should return validation error if body is invalid', async () => {
+    it('should return Bad Request if body is invalid', async () => {
       const response = await request(app.getHttpServer())
         .post(`${endpoint}`)
         .send({
@@ -44,13 +44,27 @@ describe('User (e2e)', () => {
           password: '',
         })
 
-      const validationMessageExpectation = expect.arrayContaining([expect.any(String)]);
-      expect(response.body.message).toBe('Validation Error');
       expect(response.body.errors).toEqual({
-        full_name: validationMessageExpectation,
-        email: validationMessageExpectation,
-        username: validationMessageExpectation,
-        password: validationMessageExpectation
+        statusCode: 400,
+        error: 'Bad Request',
+        message: [
+          {
+            path: 'full_name',
+            message: 'String must contain at least 3 character(s)',
+          },
+          {
+            path: 'email',
+            message: 'Invalid email',
+          },
+          {
+            path: 'username',
+            message: 'String must contain at least 6 character(s)',
+          },
+          {
+            path: 'password',
+            message: 'String must contain at least 6 character(s)',
+          },
+        ]
       })
     })
     it('should create new user', async () => {
@@ -79,7 +93,7 @@ describe('User (e2e)', () => {
         .send(user)
 
       expect(response.statusCode).toBe(400);
-      expect(response.body.errors).toBe('User already exist');
+      expect(response.body.errors.message).toBe('User already exist');
     })
 
     it('should return error if avatarPath is invalid extension', async () => {
@@ -166,7 +180,7 @@ describe('User (e2e)', () => {
         .get(`${endpoint}/invalid-id`)
 
       expect(response.statusCode).toBe(404);
-      expect(response.body.errors).toBe('User not found');
+      expect(response.body.errors.message).toBe('User not found');
     })
 
     it('should success get user', async () => {

@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../common/prisma.service';
 import { IUser } from './user.domain.interface';
 import { UserRepositoryInterface } from './user.repository.interface';
@@ -21,7 +21,7 @@ export class UserRepository implements UserRepositoryInterface {
       },
     });
     if (user) {
-      throw new HttpException('User already exist', 400);
+      throw new BadRequestException('User already exist');
     }
     return user;
   }
@@ -34,7 +34,7 @@ export class UserRepository implements UserRepositoryInterface {
     })
 
     if(!user) {
-      throw new HttpException('User not found', 404);
+      throw new NotFoundException('User not found');
     }
 
     return user;
