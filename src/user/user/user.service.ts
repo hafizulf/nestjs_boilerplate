@@ -50,4 +50,8 @@ export class UserService {
     });
     return await this.userRepository.create(user.unmarshal());
   }
+
+  async get(id: string): Promise<UserResponse> {
+    return (await this.userRepository.get(id));
+  }
 }

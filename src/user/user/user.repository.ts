@@ -25,4 +25,18 @@ export class UserRepository implements UserRepositoryInterface {
     }
     return user;
   }
+
+  async get(id: string): Promise<IUser> {
+    const user = await this.prismaService.user.findFirst({
+      where: {
+        id,
+      }
+    })
+
+    if(!user) {
+      throw new HttpException('User not found', 404);
+    }
+
+    return user;
+  }
 }

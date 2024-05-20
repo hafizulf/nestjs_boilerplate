@@ -32,4 +32,11 @@ export class TestService {
     })
     return user;
   }
+
+  async createUser(props: IUser): Promise<IUser> {
+    const user = await this.PrismaService.user.create({
+      data: props
+    })
+    return user;
+  }
 }

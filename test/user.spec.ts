@@ -150,5 +150,49 @@ describe('User (e2e)', () => {
       expect(response.body.data.avatar_path).not.toBe(null);
     })
   })
+
+  describe('GET /api/users/:id', () => {
+    const endpoint = '/api/users';
+
+    afterAll(async () => {
+      await testService.deleteUser({
+        field: 'email',
+        value: 'skuyngoding@example.com'
+      });
+    })
+
+    it('should return error if user not found', async () => {
+      const response = await request(app.getHttpServer())
+        .get(`${endpoint}/invalid-id`)
+
+      expect(response.statusCode).toBe(404);
+      expect(response.body.errors).toBe('User not found');
+    })
+
+    it('should success get user', async () => {
+      const user = await testService.createUser({
+        full_name: 'skuy ngoding',
+        email: 'skuyngoding@example.com',
+        username: 'skuy123',
+        password: '123456789'
+      });
+
+      const response = await request(app.getHttpServer())
+        .get(`${endpoint}/${user.id}`)
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body.data).toEqual({
+        id: expect.any(String),
+        full_name: 'skuy ngoding',
+        email: 'skuyngoding@example.com',
+        username: 'skuy123',
+        password: expect.any(String),
+        avatar_path: null,
+        created_at: expect.any(String),
+        updated_at: expect.any(String),
+        deleted_at: null
+      })
+    })
+  })
 });
 

@@ -2,7 +2,9 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   HttpStatus,
+  Param,
   ParseFilePipeBuilder,
   Post,
   UploadedFile,
@@ -41,6 +43,18 @@ export class UserController {
     return {
       status: HttpStatus.CREATED,
       message: 'User created successfully',
+      data: user,
+    };
+  }
+
+  @Get(':id')
+  async get(
+    @Param('id') id: string
+  ): Promise<WebResponse<UserResponse>> {
+    const user = await this.userService.get(id);
+    return {
+      status: HttpStatus.OK,
+      message: 'User fetched successfully',
       data: user,
     };
   }
